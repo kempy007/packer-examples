@@ -1,0 +1,14 @@
+<!-- ref: https://docs.platform9.com/support/enable-vnc-on-vmware-deployments/ -->
+
+<service id="0041">
+  <id>VNC</id>
+  <rule id="0000">
+    <direction>inbound</direction>
+    <protocol>tcp</protocol>
+    <porttype>dst</porttype>
+    <port>
+      <begin>5900</begin>
+      <end>6199</end>
+    </port>
+  </rule>
+</service>
