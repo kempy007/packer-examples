@@ -1,0 +1,40 @@
+{
+"variables": {
+  "vsphere_username": "{{env `user`}}",
+  "vsphere_password": "{{env `secret`}}",
+  "_comment": "win> set secret=somevalue  <lin> setenv secret somevalue   <> need to upload iso manually ",
+  "_comment": ""
+ },
+  "builders": [
+  {
+  "name": "dev-pbtest",
+  "type": "vsphere-iso",
+  
+  "vcenter_server": "vcenter.local",
+  "insecure_connection": "true",
+  "username": "{{user `vsphere_username`}}",
+  "password": "{{user `vsphere_password`}}",
+  "cluster": "Cluster01",
+  
+  "shutdown_command": "echo 'shutdown -P now' > shutdown.sh; echo 'padmin'|sudo -S sh 'shutdown.sh'",
+  
+  "iso_paths": "[datastore-ISO]/rhel-server-7.5-x86_64-dvd.iso,[datastore-ISO]/kickstart-test.iso",
+  
+  "communicator": "ssh",
+  "ssh_username": "padmin",
+  "ssh_password": "padmin",
+  "ssh_port": 22,
+  
+  "vm_name": "dev-pbtest",
+  "guest_os_type": "otherGuest",
+  "disk_size": 20000,
+  "disk_thin_provisioned": "true",
+  "datastore": "datastore1",
+  "CPUs": "1",
+  "ram": "512",
+  "network": "network1", 
+  
+  "convert_to_template": "false"
+  }
+  ]
+}
