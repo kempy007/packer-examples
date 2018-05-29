@@ -1,0 +1,51 @@
+{
+"variables": {
+  "_comment": "<win> set secret=somevalue  <lin> setenv secret somevalue <>  
+  requires ssh enabled and root account to copy iso to [datastore]/packer_cache/ which can be changed with "iso_target_path" this does leave orphaned vm's registered",
+  "version": "test",
+  "esxi_host": "esxHost",
+  "esxi_datastore": "datastore1",
+  "esxi_username": "root",
+  "esxi_password": "{{env `secret`}}"
+ },
+  "builders": [
+  {
+    "type": "vmware-iso",
+    "name": "ISO-UPLOAD1",
+    "vm_name": "dev-pb",
+	
+    "iso_url": "iso/kickstart-test.iso",
+    "iso_checksum": "71d251e09f88074094b9bfbce6ede0d4",
+    "iso_checksum_type": "md5",
+	
+    "remote_host": "{{user `esxi_host`}}",
+    "remote_datastore": "{{user `esxi_datastore`}}",
+    "remote_username": "{{user `esxi_username`}}",
+    "remote_password": "{{user `esxi_password`}}",
+    "remote_type": "esx5", 
+    "ssh_username": "padmin",
+    "ssh_wait_timeout": "1s"
+    "disable_vnc": "true",
+    "boot_wait": "1s"
+  },
+  {
+    "type": "vmware-iso",
+	"name": "ISO-UPLOAD0",
+    "vm_name": "dev-pb",
+    "iso_url": "iso/rhel-server-7.5-x86_64-dvd.iso",
+    "iso_checksum": "fdc2f2faa2e31f0ba77d49eab14651cf",
+    "iso_checksum_type": "md5",
+	
+    "remote_host": "{{user `esxi_host`}}",
+    "remote_datastore": "{{user `esxi_datastore`}}",
+    "remote_username": "{{user `esxi_username`}}",
+    "remote_password": "{{user `esxi_password`}}",
+    "remote_type": "esx5", 
+    "ssh_username": "padmin",
+    "ssh_wait_timeout": "1s",
+    "disable_vnc": "true",
+    "boot_wait": "1s"
+  }
+  
+  ]
+}
