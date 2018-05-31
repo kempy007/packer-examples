@@ -8,8 +8,8 @@
   "branch": "develop",
   "scmrepo": "https://gitlab.org.local/user1/ansible-pull-basebuild.git",
   
-  "_comment": "guest_os_type ref: https://pubs.vmware.com/vsphere-6-5/index.jsp?topic=%2Fcom.vmware.wssdk.apiref.doc%2Fvim.vm.GuestOsDescriptor.GuestOsIdentifier.html"
-  "_comment": "mkisofs -V OEMDRV -o kickstart.iso ks.cfg"
+  "_comment": "guest_os_type ref: https://pubs.vmware.com/vsphere-6-5/index.jsp?topic=%2Fcom.vmware.wssdk.apiref.doc%2Fvim.vm.GuestOsDescriptor.GuestOsIdentifier.html",
+  "_comment": "mkisofs -V OEMDRV -o kickstart.iso ks.cfg",
   "_comment": "win> set secret=somevalue  <lin> setenv secret somevalue   <> need to upload iso manually ",
   "_comment": "set PACKER_LOG=1 for debug, boot_cmd may not work"
  },
