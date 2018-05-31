@@ -1,40 +1,65 @@
 {
 "variables": {
   "vsphere_username": "{{env `user`}}",
-  "vsphere_password": "{{env `secret`}}",
+  "vsphere_password": "{{env `vs-secret`}}",
+  "ks_shell_user": "{{env `suser`}}",
+  "ks_shell_password": "{{env `ssecret`}}",
+  "system_name": "dev-pbtest",
+  "branch": "develop",
+  "scmrepo": "https://gitlab.org.local/user1/ansible-pull-basebuild.git",
+  
+  "_comment": "guest_os_type ref: https://pubs.vmware.com/vsphere-6-5/index.jsp?topic=%2Fcom.vmware.wssdk.apiref.doc%2Fvim.vm.GuestOsDescriptor.GuestOsIdentifier.html"
+  "_comment": "mkisofs -V OEMDRV -o kickstart.iso ks.cfg"
   "_comment": "win> set secret=somevalue  <lin> setenv secret somevalue   <> need to upload iso manually ",
-  "_comment": ""
+  "_comment": "set PACKER_LOG=1 for debug, boot_cmd may not work"
  },
   "builders": [
   {
-  "name": "dev-pbtest",
+  "name": "{{user `system_name`}}",
   "type": "vsphere-iso",
   
-  "vcenter_server": "vcenter.local",
+  "vcenter_server": "vcenter.org.local",
   "insecure_connection": "true",
   "username": "{{user `vsphere_username`}}",
   "password": "{{user `vsphere_password`}}",
-  "cluster": "Cluster01",
+  "cluster": "cluster01",
   
-  "shutdown_command": "echo 'shutdown -P now' > shutdown.sh; echo 'padmin'|sudo -S sh 'shutdown.sh'",
+  "shutdown_command": "echo 'shutdown -P now' > shutdown.sh; echo '{{user `ks_shell_password`}}'|sudo -S sh 'shutdown.sh'",
   
-  "iso_paths": "[datastore-ISO]/rhel-server-7.5-x86_64-dvd.iso,[datastore-ISO]/kickstart-test.iso",
+  "iso_paths": "[ISO]/rhel-server-7.5-x86_64-dvd.iso,[ISO]/kickstart-core-test.iso",
   
   "communicator": "ssh",
-  "ssh_username": "padmin",
-  "ssh_password": "padmin",
+  "ssh_username": "{{user `ks_shell_user`}}",
+  "ssh_password": "{{user `ks_shell_password`}}",
   "ssh_port": 22,
   
-  "vm_name": "dev-pbtest",
-  "guest_os_type": "otherGuest",
+  "vm_name": "{{user `system_name`}}",
+  "guest_os_type": "rhel7_64Guest",
   "disk_size": 20000,
   "disk_thin_provisioned": "true",
-  "datastore": "datastore1",
+  "datastore": "datastore01",
   "CPUs": "1",
   "ram": "512",
-  "network": "network1", 
+  "network": "network 1", 
   
   "convert_to_template": "false"
   }
+  ],
+  "provisioners": [
+
+    {
+      "type": "shell",
+      "environment_vars": [
+       "BRANCH={{user `branch`}}",
+       "SYSNAME={{user `system_name`}}",
+       "SUBUSER={{user `vsphere_username`}}",
+       "SUBPW={{user `vsphere_password`}}",
+       "SHPW={{user `ks_shell_password`}}",
+       "SCMURL={{user `scmrepo`}}"
+      ],
+      "pause_before": "1s",
+      "execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": ["provision.sh"]
+    }
   ]
 }
